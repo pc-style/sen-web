@@ -6,32 +6,32 @@ import {
   useEffect,
   useState,
   useCallback,
-} from "react";
-import { GameState, Player, Card, ChatMessage, GameAction } from "@/types";
-import { createDeck, shuffleDeck } from "@/lib/game-logic";
-import { supabase } from "@/lib/supabaseClient";
-import { RealtimeChannel } from "@supabase/supabase-js";
-import { toast } from "sonner";
-import { useSounds, SoundType } from "@/hooks/use-sounds";
+} from 'react';
+import { GameState, Player, Card, ChatMessage, GameAction } from '@/types';
+import { createDeck, shuffleDeck } from '@/lib/game-logic';
+import { supabase } from '@/lib/supabaseClient';
+import { RealtimeChannel } from '@supabase/supabase-js';
+import { toast } from 'sonner';
+import { useSounds, SoundType } from '@/hooks/use-sounds';
 
 type ReducerAction =
-  | { type: "SET_STATE"; payload: GameState }
+  | { type: 'SET_STATE'; payload: GameState }
   | {
-      type: "PROCESS_ACTION";
+      type: 'PROCESS_ACTION';
       payload: { action: GameAction; isLocal?: boolean };
     }
-  | { type: "ADD_CHAT_MESSAGE"; payload: ChatMessage };
+  | { type: 'ADD_CHAT_MESSAGE'; payload: ChatMessage };
 
 const initialState: GameState = {
-  gameMode: "lobby",
+  gameMode: 'lobby',
   roomId: null,
   hostId: null,
   players: [],
   drawPile: [],
   discardPile: [],
   currentPlayerIndex: 0,
-  gamePhase: "lobby",
-  actionMessage: "Welcome to Sen! Choose your path.",
+  gamePhase: 'lobby',
+  actionMessage: 'Welcome to Sen! Choose your path.',
   roundWinnerName: null,
   gameWinnerName: null,
   turnCount: 0,
@@ -40,14 +40,14 @@ const initialState: GameState = {
 
 const gameReducer = (state: GameState, action: ReducerAction): GameState => {
   switch (action.type) {
-    case "SET_STATE":
+    case 'SET_STATE':
       return action.payload;
-    case "ADD_CHAT_MESSAGE":
+    case 'ADD_CHAT_MESSAGE':
       return {
         ...state,
         chatMessages: [...state.chatMessages, action.payload],
       };
-    case "PROCESS_ACTION": {
+    case 'PROCESS_ACTION': {
       const gameAction = action.payload.action;
       const currentPlayer = state.players[state.currentPlayerIndex];
 
@@ -59,14 +59,14 @@ const gameReducer = (state: GameState, action: ReducerAction): GameState => {
           turnCount: s.turnCount + 1,
           actionMessage: `It's ${s.players[nextPlayerIndex].name}'s turn.`,
           drawnCard: null,
-          gamePhase: "playing",
+          gamePhase: 'playing',
         };
       };
 
       switch (gameAction.type) {
-        case "PEEK_CARD": {
+        case 'PEEK_CARD': {
           if (
-            state.gamePhase !== "peeking" ||
+            state.gamePhase !== 'peeking' ||
             !state.peekingState ||
             state.peekingState.peekedCount >= 2
           )
@@ -95,8 +95,8 @@ const gameReducer = (state: GameState, action: ReducerAction): GameState => {
             },
           };
         }
-        case "FINISH_PEEKING": {
-          if (state.gamePhase !== "peeking" || !state.peekingState)
+        case 'FINISH_PEEKING': {
+          if (state.gamePhase !== 'peeking' || !state.peekingState)
             return state;
           const { playerIndex } = state.peekingState;
           const players = state.players.map((p, idx) =>
@@ -108,7 +108,7 @@ const gameReducer = (state: GameState, action: ReducerAction): GameState => {
                     isFaceUp: false,
                   })),
                 }
-              : p,
+              : p
           );
           const nextPlayerIndex = playerIndex + 1;
           if (nextPlayerIndex < state.players.length) {
@@ -122,14 +122,14 @@ const gameReducer = (state: GameState, action: ReducerAction): GameState => {
             return {
               ...state,
               players,
-              gamePhase: "playing",
+              gamePhase: 'playing',
               peekingState: undefined,
               actionMessage: `The game begins! ${state.players[state.currentPlayerIndex].name}, your turn.`,
             };
           }
         }
-        case "DRAW_FROM_DECK": {
-          if (state.gamePhase !== "playing") return state;
+        case 'DRAW_FROM_DECK': {
+          if (state.gamePhase !== 'playing') return state;
           const newDrawPile = [...state.drawPile];
           const drawnCard = newDrawPile.pop();
           if (!drawnCard) return state;
@@ -137,12 +137,12 @@ const gameReducer = (state: GameState, action: ReducerAction): GameState => {
             ...state,
             drawPile: newDrawPile,
             drawnCard,
-            gamePhase: "holding_card",
+            gamePhase: 'holding_card',
             actionMessage: `${currentPlayer.name} drew a card. Use it, swap it, or discard it.`,
           };
         }
-        case "DRAW_FROM_DISCARD": {
-          if (state.gamePhase !== "playing" || state.discardPile.length === 0)
+        case 'DRAW_FROM_DISCARD': {
+          if (state.gamePhase !== 'playing' || state.discardPile.length === 0)
             return state;
           const newDiscardPile = [...state.discardPile];
           const drawnCard = newDiscardPile.pop()!;
@@ -152,7 +152,7 @@ const gameReducer = (state: GameState, action: ReducerAction): GameState => {
               ...state,
               discardPile: newDiscardPile,
               drawnCard: tempCard,
-              gamePhase: "holding_card",
+              gamePhase: 'holding_card',
               actionMessage: `${currentPlayer.name} took from discard. Must swap.`,
             };
           }
@@ -160,12 +160,12 @@ const gameReducer = (state: GameState, action: ReducerAction): GameState => {
             ...state,
             discardPile: newDiscardPile,
             drawnCard,
-            gamePhase: "holding_card",
+            gamePhase: 'holding_card',
             actionMessage: `${currentPlayer.name} took from discard. Must swap.`,
           };
         }
-        case "DISCARD_HELD_CARD": {
-          if (state.gamePhase !== "holding_card" || !state.drawnCard)
+        case 'DISCARD_HELD_CARD': {
+          if (state.gamePhase !== 'holding_card' || !state.drawnCard)
             return state;
           const newDiscardPile = [...state.discardPile, state.drawnCard];
           return advanceTurn({
@@ -174,8 +174,8 @@ const gameReducer = (state: GameState, action: ReducerAction): GameState => {
             actionMessage: `${currentPlayer.name} discarded their drawn card.`,
           });
         }
-        case "SWAP_HELD_CARD": {
-          if (state.gamePhase !== "holding_card" || !state.drawnCard)
+        case 'SWAP_HELD_CARD': {
+          if (state.gamePhase !== 'holding_card' || !state.drawnCard)
             return state;
           const { cardIndex } = gameAction.payload;
           const players = [...state.players];
@@ -197,30 +197,30 @@ const gameReducer = (state: GameState, action: ReducerAction): GameState => {
             actionMessage: `${currentPlayer.name} swapped a card.`,
           });
         }
-        case "USE_SPECIAL_ACTION": {
-          if (state.gamePhase !== "holding_card" || !state.drawnCard?.isSpecial)
+        case 'USE_SPECIAL_ACTION': {
+          if (state.gamePhase !== 'holding_card' || !state.drawnCard?.isSpecial)
             return state;
           const { specialAction } = state.drawnCard;
           const newDiscardPile = [...state.discardPile, state.drawnCard];
 
           switch (specialAction) {
-            case "peek_1":
+            case 'peek_1':
               return {
                 ...state,
-                gamePhase: "action_peek_1",
+                gamePhase: 'action_peek_1',
                 discardPile: newDiscardPile,
                 drawnCard: null,
                 actionMessage: `${currentPlayer.name} used 'Peek 1'. Select any card to view.`,
               };
-            case "swap_2":
+            case 'swap_2':
               return {
                 ...state,
-                gamePhase: "action_swap_2_select_1",
+                gamePhase: 'action_swap_2_select_1',
                 discardPile: newDiscardPile,
                 drawnCard: null,
                 actionMessage: `${currentPlayer.name} used 'Swap 2'. Select the first card.`,
               };
-            case "take_2": {
+            case 'take_2': {
               const newDrawPile = [...state.drawPile];
               const card1 = newDrawPile.pop();
               const card2 = newDrawPile.pop();
@@ -228,7 +228,7 @@ const gameReducer = (state: GameState, action: ReducerAction): GameState => {
               if (tempCards.length === 0) return advanceTurn(state);
               return {
                 ...state,
-                gamePhase: "action_take_2",
+                gamePhase: 'action_take_2',
                 discardPile: newDiscardPile,
                 drawPile: newDrawPile,
                 drawnCard: null,
@@ -239,13 +239,13 @@ const gameReducer = (state: GameState, action: ReducerAction): GameState => {
               return state;
           }
         }
-        case "ACTION_PEEK_1_SELECT": {
-          if (state.gamePhase !== "action_peek_1") return state;
+        case 'ACTION_PEEK_1_SELECT': {
+          if (state.gamePhase !== 'action_peek_1') return state;
           const { playerId, cardIndex } = gameAction.payload;
           const players = state.players.map((p) => {
             if (p.id === playerId) {
               const newHand = p.hand.map((c, i) =>
-                i === cardIndex ? { ...c, isFaceUp: true } : c,
+                i === cardIndex ? { ...c, isFaceUp: true } : c
               );
               return { ...p, hand: newHand };
             }
@@ -271,25 +271,25 @@ const gameReducer = (state: GameState, action: ReducerAction): GameState => {
 
           return newState;
         }
-        case "ACTION_SWAP_2_SELECT": {
+        case 'ACTION_SWAP_2_SELECT': {
           const { playerId, cardIndex } = gameAction.payload;
-          if (state.gamePhase === "action_swap_2_select_1") {
+          if (state.gamePhase === 'action_swap_2_select_1') {
             return {
               ...state,
-              gamePhase: "action_swap_2_select_2",
+              gamePhase: 'action_swap_2_select_2',
               swapState: { card1: { playerId, cardIndex } },
-              actionMessage: "Select the second card to swap.",
+              actionMessage: 'Select the second card to swap.',
             };
           }
-          if (state.gamePhase === "action_swap_2_select_2" && state.swapState) {
+          if (state.gamePhase === 'action_swap_2_select_2' && state.swapState) {
             const { card1 } = state.swapState;
             const card2 = { playerId, cardIndex };
 
             const player1Index = state.players.findIndex(
-              (p) => p.id === card1.playerId,
+              (p) => p.id === card1.playerId
             )!;
             const player2Index = state.players.findIndex(
-              (p) => p.id === card2.playerId,
+              (p) => p.id === card2.playerId
             )!;
 
             const newPlayers = JSON.parse(JSON.stringify(state.players));
@@ -308,8 +308,8 @@ const gameReducer = (state: GameState, action: ReducerAction): GameState => {
           }
           return state;
         }
-        case "ACTION_TAKE_2_CHOOSE": {
-          if (state.gamePhase !== "action_take_2" || !state.tempCards)
+        case 'ACTION_TAKE_2_CHOOSE': {
+          if (state.gamePhase !== 'action_take_2' || !state.tempCards)
             return state;
           const chosenCard = gameAction.payload.card;
           const otherCard = state.tempCards.find((c) => c.id !== chosenCard.id);
@@ -320,12 +320,12 @@ const gameReducer = (state: GameState, action: ReducerAction): GameState => {
             ...state,
             discardPile: newDiscardPile,
             drawnCard: chosenCard,
-            gamePhase: "holding_card",
+            gamePhase: 'holding_card',
             tempCards: undefined,
             actionMessage: `${currentPlayer.name} chose a card from 'Take 2'.`,
           };
         }
-        case "CALL_POBUDKA": {
+        case 'CALL_POBUDKA': {
           const caller = currentPlayer;
           const scores = state.players.map((p) => ({
             player: p,
@@ -334,7 +334,7 @@ const gameReducer = (state: GameState, action: ReducerAction): GameState => {
 
           const minScore = Math.min(...scores.map((s) => s.score));
           const callerScore = scores.find(
-            (s) => s.player.id === caller.id,
+            (s) => s.player.id === caller.id
           )!.score;
           const callerHasLowest = callerScore <= minScore;
 
@@ -348,7 +348,7 @@ const gameReducer = (state: GameState, action: ReducerAction): GameState => {
 
           const playersWithNewScores = state.players.map((p) => {
             const roundData = lastRoundScores.find(
-              (lrs) => lrs.playerId === p.id,
+              (lrs) => lrs.playerId === p.id
             )!;
             return {
               ...p,
@@ -357,13 +357,13 @@ const gameReducer = (state: GameState, action: ReducerAction): GameState => {
           });
 
           const roundWinner = scores.reduce((prev, curr) =>
-            prev.score < curr.score ? prev : curr,
+            prev.score < curr.score ? prev : curr
           );
           const gameOver = playersWithNewScores.some((p) => p.score >= 100);
 
           if (gameOver) {
             const gameWinner = playersWithNewScores.reduce((prev, curr) =>
-              prev.score < curr.score ? prev : curr,
+              prev.score < curr.score ? prev : curr
             );
             return {
               ...state,
@@ -371,7 +371,7 @@ const gameReducer = (state: GameState, action: ReducerAction): GameState => {
                 ...p,
                 hand: p.hand.map((h) => ({ ...h, isFaceUp: true })),
               })),
-              gamePhase: "game_over",
+              gamePhase: 'game_over',
               gameWinnerName: gameWinner.name,
               lastRoundScores,
               actionMessage: `Game Over! ${gameWinner.name} wins with the lowest score!`,
@@ -384,13 +384,13 @@ const gameReducer = (state: GameState, action: ReducerAction): GameState => {
               ...p,
               hand: p.hand.map((h) => ({ ...h, isFaceUp: true })),
             })),
-            gamePhase: "round_end",
+            gamePhase: 'round_end',
             roundWinnerName: roundWinner.player.name,
             lastRoundScores,
             actionMessage: `${caller.name} called 'POBUDKA!'. ${roundWinner.player.name} won the round.`,
           };
         }
-        case "START_NEW_ROUND": {
+        case 'START_NEW_ROUND': {
           const deck = shuffleDeck(createDeck());
           const playersWithNewHands = state.players.map((p) => ({
             ...p,
@@ -412,7 +412,7 @@ const gameReducer = (state: GameState, action: ReducerAction): GameState => {
             players: playersWithNewHands,
             drawPile: deck,
             discardPile,
-            gamePhase: "peeking",
+            gamePhase: 'peeking',
             currentPlayerIndex: nextStartingPlayerIndex,
             peekingState: { playerIndex: 0, peekedCount: 0 },
             actionMessage: `${playersWithNewHands[0].name}, it's your turn to peek at two cards.`,
@@ -458,35 +458,35 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
   const processAndBroadcastAction = useCallback(
     (action: GameAction) => {
-      dispatch({ type: "PROCESS_ACTION", payload: { action, isLocal: true } });
-      if (state.gameMode === "online" && channel) {
+      dispatch({ type: 'PROCESS_ACTION', payload: { action, isLocal: true } });
+      if (state.gameMode === 'online' && channel) {
         channel.send({
-          type: "broadcast",
-          event: "PLAYER_ACTION",
+          type: 'broadcast',
+          event: 'PLAYER_ACTION',
           payload: { action, senderId: myPlayerId },
         });
       }
       // Play sounds for actions
       switch (action.type) {
-        case "PEEK_CARD":
-        case "SWAP_HELD_CARD":
-        case "ACTION_PEEK_1_SELECT":
-          playSound("flip");
+        case 'PEEK_CARD':
+        case 'SWAP_HELD_CARD':
+        case 'ACTION_PEEK_1_SELECT':
+          playSound('flip');
           break;
-        case "DRAW_FROM_DECK":
-        case "DRAW_FROM_DISCARD":
-          playSound("draw");
+        case 'DRAW_FROM_DECK':
+        case 'DRAW_FROM_DISCARD':
+          playSound('draw');
           break;
-        case "CALL_POBUDKA":
-          playSound("pobudka");
+        case 'CALL_POBUDKA':
+          playSound('pobudka');
           break;
       }
     },
-    [state.gameMode, myPlayerId, playSound],
+    [state.gameMode, myPlayerId, playSound]
   );
 
   const sendChatMessage = (message: string) => {
-    if (state.gameMode !== "online" || !channel || !myPlayerId) return;
+    if (state.gameMode !== 'online' || !channel || !myPlayerId) return;
     const me = state.players.find((p) => p.id === myPlayerId);
     if (!me) return;
 
@@ -498,12 +498,12 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       timestamp: Date.now(),
     };
 
-    dispatch({ type: "ADD_CHAT_MESSAGE", payload: chatMessage });
-    playSound("chat");
+    dispatch({ type: 'ADD_CHAT_MESSAGE', payload: chatMessage });
+    playSound('chat');
 
     channel.send({
-      type: "broadcast",
-      event: "CHAT_MESSAGE",
+      type: 'broadcast',
+      event: 'CHAT_MESSAGE',
       payload: { message: chatMessage },
     });
   };
@@ -515,21 +515,21 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       }
       channel = ch;
       channel
-        .on("broadcast", { event: "PLAYER_ACTION" }, ({ payload }) => {
+        .on('broadcast', { event: 'PLAYER_ACTION' }, ({ payload }) => {
           if (payload.senderId !== myPlayerId) {
             dispatch({
-              type: "PROCESS_ACTION",
+              type: 'PROCESS_ACTION',
               payload: { action: payload.action },
             });
           }
         })
-        .on("broadcast", { event: "CHAT_MESSAGE" }, ({ payload }) => {
+        .on('broadcast', { event: 'CHAT_MESSAGE' }, ({ payload }) => {
           if (payload.message.senderId !== myPlayerId) {
-            dispatch({ type: "ADD_CHAT_MESSAGE", payload: payload.message });
-            playSound("chat");
+            dispatch({ type: 'ADD_CHAT_MESSAGE', payload: payload.message });
+            playSound('chat');
           }
         })
-        .on("presence", { event: "join" }, ({ newPresences }) => {
+        .on('presence', { event: 'join' }, ({ newPresences }) => {
           if (state.hostId !== myPlayerId || state.players.length >= 2) return;
           const newPlayerInfo = newPresences[0];
           toast.info(`${newPlayerInfo.name} has joined the room.`);
@@ -553,55 +553,55 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
           const startPeekingState: GameState = {
             ...state,
-            gameMode: "online",
+            gameMode: 'online',
             players: playersWithCards,
             drawPile: deck,
             discardPile,
-            gamePhase: "peeking",
+            gamePhase: 'peeking',
             actionMessage: `${playersWithCards[0].name}, it's your turn to peek at two cards.`,
             peekingState: { playerIndex: 0, peekedCount: 0 },
           };
           if (channel)
             channel.send({
-              type: "broadcast",
-              event: "SYNC_STATE",
+              type: 'broadcast',
+              event: 'SYNC_STATE',
               payload: { state: startPeekingState },
             });
-          dispatch({ type: "SET_STATE", payload: startPeekingState });
+          dispatch({ type: 'SET_STATE', payload: startPeekingState });
         })
-        .on("broadcast", { event: "SYNC_STATE" }, ({ payload }) => {
-          dispatch({ type: "SET_STATE", payload: payload.state });
+        .on('broadcast', { event: 'SYNC_STATE' }, ({ payload }) => {
+          dispatch({ type: 'SET_STATE', payload: payload.state });
         })
-        .on("broadcast", { event: "REQUEST_SYNC" }, ({ payload }) => {
+        .on('broadcast', { event: 'REQUEST_SYNC' }, ({ payload }) => {
           if (payload.senderId !== myPlayerId) {
             channel?.send({
-              type: "broadcast",
-              event: "SYNC_STATE",
+              type: 'broadcast',
+              event: 'SYNC_STATE',
               payload: { state },
             });
           }
         })
-        .on("presence", { event: "leave" }, ({ leftPresences }) => {
+        .on('presence', { event: 'leave' }, ({ leftPresences }) => {
           toast.warning(
-            `${leftPresences[0].name} has left the room. Game reset.`,
+            `${leftPresences[0].name} has left the room. Game reset.`
           );
           if (channel) supabase.removeChannel(channel);
           channel = null;
           setMyPlayerId(null);
           sessionStorage.clear();
-          dispatch({ type: "SET_STATE", payload: initialState });
+          dispatch({ type: 'SET_STATE', payload: initialState });
         })
         .subscribe();
     },
-    [myPlayerId, state],
+    [myPlayerId, state]
   );
 
   // Reconnection logic
   useEffect(() => {
     const reconnect = async () => {
-      const storedPlayerId = sessionStorage.getItem("sen-playerId");
-      const storedRoomId = sessionStorage.getItem("sen-roomId");
-      const storedPlayerName = sessionStorage.getItem("sen-playerName");
+      const storedPlayerId = sessionStorage.getItem('sen-playerId');
+      const storedRoomId = sessionStorage.getItem('sen-roomId');
+      const storedPlayerName = sessionStorage.getItem('sen-playerName');
 
       if (storedPlayerId && storedRoomId && storedPlayerName) {
         setMyPlayerId(storedPlayerId);
@@ -611,11 +611,11 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         setupChannel(newChannel);
         await newChannel.track({ id: storedPlayerId, name: storedPlayerName });
         toast.info(
-          `Reconnected to room ${storedRoomId}. Requesting game state...`,
+          `Reconnected to room ${storedRoomId}. Requesting game state...`
         );
         newChannel.send({
-          type: "broadcast",
-          event: "REQUEST_SYNC",
+          type: 'broadcast',
+          event: 'REQUEST_SYNC',
           payload: { senderId: storedPlayerId },
         });
       }
@@ -634,7 +634,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     };
     const newState: GameState = {
       ...initialState,
-      gameMode: "online",
+      gameMode: 'online',
       roomId,
       hostId: playerId,
       players: [newPlayer],
@@ -648,13 +648,13 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     await newChannel.track({ id: playerId, name: playerName });
 
     setMyPlayerId(playerId);
-    sessionStorage.setItem("sen-playerId", playerId);
-    sessionStorage.setItem("sen-roomId", roomId);
-    sessionStorage.setItem("sen-playerName", playerName);
+    sessionStorage.setItem('sen-playerId', playerId);
+    sessionStorage.setItem('sen-roomId', roomId);
+    sessionStorage.setItem('sen-playerName', playerName);
 
-    dispatch({ type: "SET_STATE", payload: newState });
+    dispatch({ type: 'SET_STATE', payload: newState });
     toast.success(
-      `Room created! Your ID is ${roomId}. Share it with a friend.`,
+      `Room created! Your ID is ${roomId}. Share it with a friend.`
     );
   };
 
@@ -663,17 +663,17 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     const newChannel = supabase.channel(roomId);
 
     newChannel.subscribe(async (status) => {
-      if (status === "SUBSCRIBED") {
+      if (status === 'SUBSCRIBED') {
         setupChannel(newChannel);
         await newChannel.track({ id: playerId, name: playerName });
         setMyPlayerId(playerId);
-        sessionStorage.setItem("sen-playerId", playerId);
-        sessionStorage.setItem("sen-roomId", roomId);
-        sessionStorage.setItem("sen-playerName", playerName);
+        sessionStorage.setItem('sen-playerId', playerId);
+        sessionStorage.setItem('sen-roomId', roomId);
+        sessionStorage.setItem('sen-playerName', playerName);
         toast.success(`Joined room ${roomId}! Waiting for game to sync.`);
       }
-      if (status === "CHANNEL_ERROR") {
-        toast.error("Could not join room. Check the ID.");
+      if (status === 'CHANNEL_ERROR') {
+        toast.error('Could not join room. Check the ID.');
         newChannel.unsubscribe();
       }
     });
@@ -681,13 +681,13 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
   const startHotseatGame = (player1Name: string, player2Name: string) => {
     const p1: Player = {
-      id: "player-1",
+      id: 'player-1',
       name: player1Name,
       hand: [],
       score: 0,
     };
     const p2: Player = {
-      id: "player-2",
+      id: 'player-2',
       name: player2Name,
       hand: [],
       score: 0,
@@ -705,15 +705,15 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
     const startPeekingState: GameState = {
       ...initialState,
-      gameMode: "hotseat",
+      gameMode: 'hotseat',
       players: playersWithCards,
       drawPile: deck,
       discardPile,
-      gamePhase: "peeking",
+      gamePhase: 'peeking',
       actionMessage: `${playersWithCards[0].name}, it's your turn to peek at two cards.`,
       peekingState: { playerIndex: 0, peekedCount: 0 },
     };
-    dispatch({ type: "SET_STATE", payload: startPeekingState });
+    dispatch({ type: 'SET_STATE', payload: startPeekingState });
   };
 
   return (

@@ -2,7 +2,7 @@ export interface Card {
   id: number;
   value: number;
   isSpecial: boolean;
-  specialAction?: "take_2" | "peek_1" | "swap_2";
+  specialAction?: 'take_2' | 'peek_1' | 'swap_2';
 }
 
 export interface Player {
@@ -12,19 +12,19 @@ export interface Player {
   score: number;
 }
 
-export type GameMode = "lobby" | "online" | "hotseat";
+export type GameMode = 'lobby' | 'online' | 'hotseat';
 
 export type GamePhase =
-  | "lobby"
-  | "peeking"
-  | "playing"
-  | "holding_card" // Player has drawn a card and must decide what to do
-  | "action_take_2"
-  | "action_peek_1"
-  | "action_swap_2_select_1"
-  | "action_swap_2_select_2"
-  | "round_end"
-  | "game_over";
+  | 'lobby'
+  | 'peeking'
+  | 'playing'
+  | 'holding_card' // Player has drawn a card and must decide what to do
+  | 'action_take_2'
+  | 'action_peek_1'
+  | 'action_swap_2_select_1'
+  | 'action_swap_2_select_2'
+  | 'round_end'
+  | 'game_over';
 
 export interface ChatMessage {
   id: string;
@@ -62,21 +62,21 @@ export interface GameState {
 }
 
 export type GameAction =
-  | { type: "PEEK_CARD"; payload: { playerId: string; cardIndex: number } }
-  | { type: "FINISH_PEEKING" }
-  | { type: "DRAW_FROM_DECK" }
-  | { type: "DRAW_FROM_DISCARD" }
-  | { type: "DISCARD_HELD_CARD" }
-  | { type: "SWAP_HELD_CARD"; payload: { cardIndex: number } }
-  | { type: "USE_SPECIAL_ACTION" }
+  | { type: 'PEEK_CARD'; payload: { playerId: string; cardIndex: number } }
+  | { type: 'FINISH_PEEKING' }
+  | { type: 'DRAW_FROM_DECK' }
+  | { type: 'DRAW_FROM_DISCARD' }
+  | { type: 'DISCARD_HELD_CARD' }
+  | { type: 'SWAP_HELD_CARD'; payload: { cardIndex: number } }
+  | { type: 'USE_SPECIAL_ACTION' }
   | {
-      type: "ACTION_PEEK_1_SELECT";
+      type: 'ACTION_PEEK_1_SELECT';
       payload: { playerId: string; cardIndex: number };
     }
   | {
-      type: "ACTION_SWAP_2_SELECT";
+      type: 'ACTION_SWAP_2_SELECT';
       payload: { playerId: string; cardIndex: number };
     }
-  | { type: "ACTION_TAKE_2_CHOOSE"; payload: { card: Card } }
-  | { type: "CALL_POBUDKA" }
-  | { type: "START_NEW_ROUND" };
+  | { type: 'ACTION_TAKE_2_CHOOSE'; payload: { card: Card } }
+  | { type: 'CALL_POBUDKA' }
+  | { type: 'START_NEW_ROUND' };

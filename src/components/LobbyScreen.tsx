@@ -1,48 +1,48 @@
-import React, { useState } from "react";
-import { useGame } from "@/context/GameContext";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import React, { useState } from 'react';
+import { useGame } from '@/context/GameContext';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card";
-import { toast } from "sonner";
-import { ArrowLeft, Users, Cloud } from "lucide-react";
+} from '@/components/ui/card';
+import { toast } from 'sonner';
+import { ArrowLeft, Users, Cloud } from 'lucide-react';
 
 export const LobbyScreen: React.FC = () => {
   const { createRoom, joinRoom, startHotseatGame, state } = useGame();
-  const [mode, setMode] = useState<"select" | "online" | "hotseat">("select");
-  const [roomIdInput, setRoomIdInput] = useState("");
-  const [playerName, setPlayerName] = useState("");
-  const [player1Name, setPlayer1Name] = useState("");
-  const [player2Name, setPlayer2Name] = useState("");
+  const [mode, setMode] = useState<'select' | 'online' | 'hotseat'>('select');
+  const [roomIdInput, setRoomIdInput] = useState('');
+  const [playerName, setPlayerName] = useState('');
+  const [player1Name, setPlayer1Name] = useState('');
+  const [player2Name, setPlayer2Name] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCreateRoom = async () => {
     if (!playerName.trim()) {
-      toast.error("Please enter your name.");
+      toast.error('Please enter your name.');
       return;
     }
     setIsLoading(true);
     try {
       await createRoom(playerName);
     } catch {
-      toast.error("Could not create room. Is Supabase connected?");
+      toast.error('Could not create room. Is Supabase connected?');
       setIsLoading(false);
     }
   };
 
   const handleJoinRoom = async () => {
     if (!playerName.trim()) {
-      toast.error("Please enter your name.");
+      toast.error('Please enter your name.');
       return;
     }
     if (!roomIdInput.trim()) {
-      toast.error("Please enter a Room ID.");
+      toast.error('Please enter a Room ID.');
       return;
     }
     setIsLoading(true);
@@ -50,7 +50,7 @@ export const LobbyScreen: React.FC = () => {
       await joinRoom(roomIdInput.trim(), playerName);
     } catch (error: unknown) {
       const message =
-        error instanceof Error ? error.message : "Failed to join room.";
+        error instanceof Error ? error.message : 'Failed to join room.';
       toast.error(message);
       setIsLoading(false);
     }
@@ -58,7 +58,7 @@ export const LobbyScreen: React.FC = () => {
 
   const handleStartHotseat = () => {
     if (!player1Name.trim() || !player2Name.trim()) {
-      toast.error("Please enter names for both players.");
+      toast.error('Please enter names for both players.');
       return;
     }
     startHotseatGame(player1Name, player2Name);
@@ -66,14 +66,14 @@ export const LobbyScreen: React.FC = () => {
 
   const effectiveLoading =
     isLoading ||
-    (state.gameMode === "online" &&
+    (state.gameMode === 'online' &&
       state.roomId !== null &&
       state.players.length < 2);
 
   const renderSelectMode = () => (
     <>
       <CardHeader className="space-y-2 sm:space-y-3">
-        <CardTitle className="text-4xl sm:text-5xl md:text-6xl text-center font-heading bg-gradient-to-br from-purple-600 to-pink-600 bg-clip-text text-transparent">
+        <CardTitle className="bg-gradient-to-br from-purple-600 to-pink-600 bg-clip-text text-center font-heading text-4xl text-transparent sm:text-5xl md:text-6xl">
           Sen
         </CardTitle>
         <CardDescription className="text-center text-sm sm:text-base">
@@ -82,15 +82,15 @@ export const LobbyScreen: React.FC = () => {
       </CardHeader>
       <CardContent className="space-y-3 sm:space-y-4">
         <Button
-          onClick={() => setMode("online")}
-          className="w-full min-h-[52px] sm:min-h-[56px] text-base sm:text-lg"
+          onClick={() => setMode('online')}
+          className="min-h-[52px] w-full text-base sm:min-h-[56px] sm:text-lg"
           size="lg"
         >
           <Cloud className="mr-2 h-5 w-5 sm:h-6 sm:w-6" /> Online Multiplayer
         </Button>
         <Button
-          onClick={() => setMode("hotseat")}
-          className="w-full min-h-[52px] sm:min-h-[56px] text-base sm:text-lg"
+          onClick={() => setMode('hotseat')}
+          className="min-h-[52px] w-full text-base sm:min-h-[56px] sm:text-lg"
           size="lg"
           variant="secondary"
         >
@@ -106,13 +106,13 @@ export const LobbyScreen: React.FC = () => {
         <Button
           variant="ghost"
           size="sm"
-          className="absolute top-3 left-3 sm:top-4 sm:left-4 min-h-[40px]"
-          onClick={() => setMode("select")}
+          className="absolute left-3 top-3 min-h-[40px] sm:left-4 sm:top-4"
+          onClick={() => setMode('select')}
         >
-          <ArrowLeft className="mr-1 sm:mr-2 h-4 w-4" />{" "}
+          <ArrowLeft className="mr-1 h-4 w-4 sm:mr-2" />{' '}
           <span className="hidden sm:inline">Back</span>
         </Button>
-        <CardTitle className="text-2xl sm:text-3xl md:text-4xl text-center font-heading pt-10 sm:pt-8">
+        <CardTitle className="pt-10 text-center font-heading text-2xl sm:pt-8 sm:text-3xl md:text-4xl">
           Online Multiplayer
         </CardTitle>
         <CardDescription className="text-center text-sm sm:text-base">
@@ -135,18 +135,18 @@ export const LobbyScreen: React.FC = () => {
         </div>
         <Button
           onClick={handleCreateRoom}
-          className="w-full min-h-[48px] sm:min-h-[52px] text-base"
+          className="min-h-[48px] w-full text-base sm:min-h-[52px]"
           disabled={effectiveLoading}
         >
           {effectiveLoading && state.hostId
-            ? "Waiting for opponent..."
-            : "Create New Game"}
+            ? 'Waiting for opponent...'
+            : 'Create New Game'}
         </Button>
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t" />
           </div>
-          <div className="relative flex justify-center text-xs sm:text-sm uppercase">
+          <div className="relative flex justify-center text-xs uppercase sm:text-sm">
             <span className="bg-card px-2 text-muted-foreground">Or</span>
           </div>
         </div>
@@ -166,10 +166,10 @@ export const LobbyScreen: React.FC = () => {
         <Button
           variant="secondary"
           onClick={handleJoinRoom}
-          className="w-full min-h-[48px] sm:min-h-[52px] text-base"
+          className="min-h-[48px] w-full text-base sm:min-h-[52px]"
           disabled={effectiveLoading}
         >
-          {effectiveLoading && !state.hostId ? "Joining..." : "Join Game"}
+          {effectiveLoading && !state.hostId ? 'Joining...' : 'Join Game'}
         </Button>
       </CardContent>
     </>
@@ -181,13 +181,13 @@ export const LobbyScreen: React.FC = () => {
         <Button
           variant="ghost"
           size="sm"
-          className="absolute top-3 left-3 sm:top-4 sm:left-4 min-h-[40px]"
-          onClick={() => setMode("select")}
+          className="absolute left-3 top-3 min-h-[40px] sm:left-4 sm:top-4"
+          onClick={() => setMode('select')}
         >
-          <ArrowLeft className="mr-1 sm:mr-2 h-4 w-4" />{" "}
+          <ArrowLeft className="mr-1 h-4 w-4 sm:mr-2" />{' '}
           <span className="hidden sm:inline">Back</span>
         </Button>
-        <CardTitle className="text-2xl sm:text-3xl md:text-4xl text-center font-heading pt-10 sm:pt-8">
+        <CardTitle className="pt-10 text-center font-heading text-2xl sm:pt-8 sm:text-3xl md:text-4xl">
           Local Hot-Seat
         </CardTitle>
         <CardDescription className="text-center text-sm sm:text-base">
@@ -221,7 +221,7 @@ export const LobbyScreen: React.FC = () => {
         </div>
         <Button
           onClick={handleStartHotseat}
-          className="w-full min-h-[52px] sm:min-h-[56px] text-base sm:text-lg !mt-6 sm:!mt-8"
+          className="!mt-6 min-h-[52px] w-full text-base sm:!mt-8 sm:min-h-[56px] sm:text-lg"
           size="lg"
         >
           Start Game
@@ -231,11 +231,11 @@ export const LobbyScreen: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 bg-gradient-to-br from-blue-50 via-purple-50 to-cyan-50">
-      <Card className="w-full max-w-md sm:max-w-lg bg-white/90 backdrop-blur-sm shadow-soft-lg relative border-2 border-purple-100/50">
-        {mode === "select" && renderSelectMode()}
-        {mode === "online" && renderOnlineMode()}
-        {mode === "hotseat" && renderHotseatMode()}
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-cyan-50 p-4 sm:p-6">
+      <Card className="relative w-full max-w-md border-2 border-purple-100/50 bg-white/90 shadow-soft-lg backdrop-blur-sm sm:max-w-lg">
+        {mode === 'select' && renderSelectMode()}
+        {mode === 'online' && renderOnlineMode()}
+        {mode === 'hotseat' && renderHotseatMode()}
       </Card>
     </div>
   );

@@ -1,6 +1,6 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { Button } from "./ui/button";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Button } from './ui/button';
 
 interface LandingPageProps {
   onEnter: () => void;
@@ -25,7 +25,7 @@ const Crow = ({
 );
 
 export const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
-  const title = "Sen";
+  const title = 'Sen';
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -44,7 +44,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
       opacity: 1,
       transition: {
         duration: 0.8,
-        ease: "easeOut" as const,
+        ease: 'easeOut' as const,
       },
     },
   };
@@ -56,13 +56,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
       opacity: 1,
       transition: {
         duration: 0.8,
-        ease: "easeOut" as const,
+        ease: 'easeOut' as const,
       },
     },
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden p-4 sm:p-6 md:p-8">
+    <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden p-4 sm:p-6 md:p-8">
       {/* Background elements - bright, fun gradients */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-br from-blue-100 via-purple-50 to-cyan-100"
@@ -70,37 +70,37 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
         animate={{ opacity: 1 }}
         transition={{ duration: 2 }}
       />
-      <motion.div className="absolute -bottom-1/4 -left-1/4 w-1/2 h-1/2 bg-gradient-to-br from-purple-200/60 to-pink-200/60 rounded-full blur-3xl animate-float" />
+      <motion.div className="absolute -bottom-1/4 -left-1/4 h-1/2 w-1/2 animate-float rounded-full bg-gradient-to-br from-purple-200/60 to-pink-200/60 blur-3xl" />
       <motion.div
-        className="absolute -top-1/4 -right-1/4 w-1/2 h-1/2 bg-gradient-to-br from-cyan-200/60 to-blue-200/60 rounded-full blur-3xl animate-float"
-        style={{ animationDelay: "-3s" }}
+        className="absolute -right-1/4 -top-1/4 h-1/2 w-1/2 animate-float rounded-full bg-gradient-to-br from-cyan-200/60 to-blue-200/60 blur-3xl"
+        style={{ animationDelay: '-3s' }}
       />
 
       {/* Flying Crows - darker for visibility on light background */}
       <Crow
-        className="absolute top-[10%] -left-[10%] w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 text-purple-900/20 animate-fly-across"
-        style={{ animationDelay: "-2s", animationDuration: "25s" }}
+        className="absolute -left-[10%] top-[10%] h-16 w-16 animate-fly-across text-purple-900/20 sm:h-20 sm:w-20 md:h-24 md:w-24"
+        style={{ animationDelay: '-2s', animationDuration: '25s' }}
       />
       <Crow
-        className="absolute top-[50%] -left-[10%] w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 text-purple-800/15 animate-fly-across"
-        style={{ animationDelay: "0s", animationDuration: "18s" }}
+        className="absolute -left-[10%] top-[50%] h-12 w-12 animate-fly-across text-purple-800/15 sm:h-14 sm:w-14 md:h-16 md:w-16"
+        style={{ animationDelay: '0s', animationDuration: '18s' }}
       />
       <Crow
-        className="absolute top-[80%] -left-[10%] w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 text-purple-900/20 animate-fly-across"
-        style={{ animationDelay: "-10s", animationDuration: "30s" }}
+        className="absolute -left-[10%] top-[80%] h-20 w-20 animate-fly-across text-purple-900/20 sm:h-24 sm:w-24 md:h-32 md:w-32"
+        style={{ animationDelay: '-10s', animationDuration: '30s' }}
       />
 
       <motion.div
-        className="text-center z-10 flex flex-col items-center max-w-3xl mx-auto"
+        className="z-10 mx-auto flex max-w-3xl flex-col items-center text-center"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         <motion.h1
-          className="font-heading text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold bg-gradient-to-br from-purple-600 via-purple-700 to-pink-600 bg-clip-text text-transparent flex overflow-hidden"
+          className="flex overflow-hidden bg-gradient-to-br from-purple-600 via-purple-700 to-pink-600 bg-clip-text font-heading text-6xl font-bold text-transparent sm:text-7xl md:text-8xl lg:text-9xl"
           aria-label={title}
         >
-          {title.split("").map((letter, index) => (
+          {title.split('').map((letter, index) => (
             <motion.span
               key={index}
               variants={letterVariants}
@@ -112,7 +112,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
         </motion.h1>
 
         <motion.p
-          className="mt-3 sm:mt-4 text-base sm:text-lg md:text-xl text-gray-700 font-medium"
+          className="mt-3 text-base font-medium text-gray-700 sm:mt-4 sm:text-lg md:text-xl"
           variants={itemVariants}
         >
           A game of dreams and crows.
@@ -122,7 +122,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
           <Button
             onClick={onEnter}
             size="lg"
-            className="font-semibold text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 shadow-soft-lg hover:shadow-dreamy transition-all duration-300 hover:scale-105 active:scale-95"
+            className="hover:shadow-dreamy px-6 py-5 text-base font-semibold shadow-soft-lg transition-all duration-300 hover:scale-105 active:scale-95 sm:px-8 sm:py-6 sm:text-lg"
           >
             Enter the Dream
           </Button>

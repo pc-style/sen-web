@@ -1,4 +1,4 @@
-import { Card } from "@/types";
+import { Card } from '@/types';
 
 export const createDeck = (): Card[] => {
   const cards: Card[] = [];
@@ -21,8 +21,8 @@ export const createDeck = (): Card[] => {
         id: id++,
         value: 6,
         isSpecial: true,
-        specialAction: "peek_1" as const,
-      })),
+        specialAction: 'peek_1' as const,
+      }))
   );
   cards.push(
     ...Array(4)
@@ -31,8 +31,8 @@ export const createDeck = (): Card[] => {
         id: id++,
         value: 7,
         isSpecial: true,
-        specialAction: "take_2" as const,
-      })),
+        specialAction: 'take_2' as const,
+      }))
   );
   cards.push(
     ...Array(4)
@@ -41,8 +41,8 @@ export const createDeck = (): Card[] => {
         id: id++,
         value: 8,
         isSpecial: true,
-        specialAction: "swap_2" as const,
-      })),
+        specialAction: 'swap_2' as const,
+      }))
   );
 
   return cards;

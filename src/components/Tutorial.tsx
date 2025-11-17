@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useTutorial } from '@/context/TutorialContext';
 import { useGame } from '@/context/GameContext';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from './ui/dialog';
 import { Popover, PopoverContent, PopoverAnchor } from './ui/popover';
 import { Button } from './ui/button';
 
@@ -16,7 +23,9 @@ const TutorialPopover: React.FC<{
   const [targetElement, setTargetElement] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
-    const element = document.querySelector(`[data-tutorial-id="${targetId}"]`) as HTMLElement;
+    const element = document.querySelector(
+      `[data-tutorial-id="${targetId}"]`
+    ) as HTMLElement;
     setTargetElement(element);
   }, [targetId]);
 
@@ -26,20 +35,24 @@ const TutorialPopover: React.FC<{
   return (
     <Popover open={isOpen}>
       <PopoverAnchor asChild>
-        <div style={{
-          position: 'absolute',
-          top: targetElement?.offsetTop,
-          left: targetElement?.offsetLeft,
-          width: targetElement?.offsetWidth,
-          height: targetElement?.offsetHeight,
-          pointerEvents: 'none'
-        }} />
+        <div
+          style={{
+            position: 'absolute',
+            top: targetElement?.offsetTop,
+            left: targetElement?.offsetLeft,
+            width: targetElement?.offsetWidth,
+            height: targetElement?.offsetHeight,
+            pointerEvents: 'none',
+          }}
+        />
       </PopoverAnchor>
       <PopoverContent side={side} className="z-[200] max-w-xs">
         <div className="space-y-2">
-          <h4 className="font-bold font-heading">{title}</h4>
+          <h4 className="font-heading font-bold">{title}</h4>
           <p className="text-sm">{description}</p>
-          <Button onClick={onNext} className="w-full">Next</Button>
+          <Button onClick={onNext} className="w-full">
+            Next
+          </Button>
         </div>
       </PopoverContent>
     </Popover>
@@ -63,13 +76,20 @@ export const Tutorial: React.FC = () => {
     <>
       {/* Welcome Dialog */}
       <Dialog open={step === 'welcome'}>
-        <DialogContent className="bg-card/80 backdrop-blur-lg border-white/20">
+        <DialogContent className="border-white/20 bg-card/80 backdrop-blur-lg">
           <DialogHeader>
-            <DialogTitle className="font-heading text-2xl">Welcome to Sen!</DialogTitle>
-            <DialogDescription>It looks like this is your first time. Would you like a quick tutorial?</DialogDescription>
+            <DialogTitle className="font-heading text-2xl">
+              Welcome to Sen!
+            </DialogTitle>
+            <DialogDescription>
+              It looks like this is your first time. Would you like a quick
+              tutorial?
+            </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={endTutorial}>No, thanks</Button>
+            <Button variant="outline" onClick={endTutorial}>
+              No, thanks
+            </Button>
             <Button onClick={startTutorial}>Yes, please!</Button>
           </DialogFooter>
         </DialogContent>
@@ -135,10 +155,15 @@ export const Tutorial: React.FC = () => {
 
       {/* End Dialog */}
       <Dialog open={step === 'end'}>
-        <DialogContent className="bg-card/80 backdrop-blur-lg border-white/20">
+        <DialogContent className="border-white/20 bg-card/80 backdrop-blur-lg">
           <DialogHeader>
-            <DialogTitle className="font-heading text-2xl">You're Ready!</DialogTitle>
-            <DialogDescription>That's all you need to know. Have fun, and may your dreams be free of crows!</DialogDescription>
+            <DialogTitle className="font-heading text-2xl">
+              You're Ready!
+            </DialogTitle>
+            <DialogDescription>
+              That's all you need to know. Have fun, and may your dreams be free
+              of crows!
+            </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button onClick={endTutorial}>Let's Play!</Button>

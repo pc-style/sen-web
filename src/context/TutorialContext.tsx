@@ -4,18 +4,18 @@ import {
   useContext,
   ReactNode,
   useEffect,
-} from "react";
+} from 'react';
 
 type TutorialStep =
-  | "inactive"
-  | "welcome"
-  | "goal"
-  | "hand"
-  | "peeking"
-  | "piles"
-  | "actions"
-  | "pobudka"
-  | "end";
+  | 'inactive'
+  | 'welcome'
+  | 'goal'
+  | 'hand'
+  | 'peeking'
+  | 'piles'
+  | 'actions'
+  | 'pobudka'
+  | 'end';
 
 interface TutorialContextType {
   step: TutorialStep;
@@ -26,47 +26,47 @@ interface TutorialContextType {
 }
 
 const TutorialContext = createContext<TutorialContextType | undefined>(
-  undefined,
+  undefined
 );
 
 export const TutorialProvider = ({ children }: { children: ReactNode }) => {
-  const [step, setStep] = useState<TutorialStep>("inactive");
+  const [step, setStep] = useState<TutorialStep>('inactive');
 
   useEffect(() => {
-    const tutorialCompleted = localStorage.getItem("sen_tutorial_completed");
+    const tutorialCompleted = localStorage.getItem('sen_tutorial_completed');
     if (!tutorialCompleted) {
-      setStep("welcome");
+      setStep('welcome');
     }
   }, []);
 
   const startTutorial = () => {
-    setStep("goal");
+    setStep('goal');
   };
 
   const nextStep = () => {
     setStep((prev) => {
       switch (prev) {
-        case "goal":
-          return "hand";
-        case "hand":
-          return "peeking";
-        case "peeking":
-          return "piles";
-        case "piles":
-          return "actions";
-        case "actions":
-          return "pobudka";
-        case "pobudka":
-          return "end";
+        case 'goal':
+          return 'hand';
+        case 'hand':
+          return 'peeking';
+        case 'peeking':
+          return 'piles';
+        case 'piles':
+          return 'actions';
+        case 'actions':
+          return 'pobudka';
+        case 'pobudka':
+          return 'end';
         default:
-          return "inactive";
+          return 'inactive';
       }
     });
   };
 
   const endTutorial = () => {
-    localStorage.setItem("sen_tutorial_completed", "true");
-    setStep("inactive");
+    localStorage.setItem('sen_tutorial_completed', 'true');
+    setStep('inactive');
   };
 
   return (
@@ -81,7 +81,7 @@ export const TutorialProvider = ({ children }: { children: ReactNode }) => {
 export const useTutorial = () => {
   const context = useContext(TutorialContext);
   if (context === undefined) {
-    throw new Error("useTutorial must be used within a TutorialProvider");
+    throw new Error('useTutorial must be used within a TutorialProvider');
   }
   return context;
 };
