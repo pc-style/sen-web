@@ -256,8 +256,10 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
                     hasBeenPeeked={cardInHand.hasBeenPeeked}
                     onClick={() => handleCardClick(index)}
                     className={cn(
+                      // Opponent cards should still be readable on mobile.
+                      // Slightly smaller than my hand, but not tiny.
                       isOpponent &&
-                      "!w-[9vw] !max-w-12 sm:!w-[8vw] sm:!max-w-16 md:!w-[7vw] md:!max-w-20 lg:!w-[6vw] lg:!max-w-24",
+                        "!w-[clamp(64px,18vw,104px)] sm:!w-[clamp(76px,14vw,116px)] md:!w-[clamp(88px,12vw,128px)] lg:!w-[clamp(96px,10vw,136px)]",
                       getCardInteractionClass(index),
                     )}
                     playSound={playSound}

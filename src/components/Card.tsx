@@ -83,7 +83,9 @@ export const GameCard: React.FC<CardProps> = ({
 
   // No rings at all. Rounded, image edge-to-edge. Soft depth shadow only.
   const outerClasses = cn(
-    "group w-[18vw] max-w-24 sm:w-[15vw] sm:max-w-28 md:w-[10vw] md:max-w-32 lg:w-[8vw] lg:max-w-36 aspect-[2/3] perspective-1000 rounded-xl overflow-hidden",
+    // Use clamp-based sizing so cards stay readable on small phones
+    // and scale down smoothly as the screen grows.
+    "group w-[clamp(72px,26vw,112px)] sm:w-[clamp(88px,20vw,132px)] md:w-[clamp(96px,14vw,152px)] lg:w-[clamp(104px,12vw,168px)] aspect-[2/3] perspective-1000 rounded-xl overflow-hidden",
     (isGlowing || justRevealed) && isFaceUp ? "shadow-soft" : "",
     peekGlow,
     specialRevealGlow,
