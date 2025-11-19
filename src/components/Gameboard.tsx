@@ -96,7 +96,7 @@ export const Gameboard: React.FC = () => {
 
   const isPlayerActionable = isMyTurn && gamePhase === "playing";
   const pileCardClass =
-    "!w-[34vw] !max-w-[6.5rem] sm:!w-36 sm:!max-w-[8.5rem] md:!w-40 md:!max-w-[9.5rem] lg:!w-48 lg:!max-w-[10.5rem]";
+    "!w-[28vw] !max-w-[5.5rem] sm:!w-32 sm:!max-w-[7.5rem] md:!w-36 md:!max-w-[8.5rem] lg:!w-48 lg:!max-w-[10.5rem]";
 
   const SidePanelContent = () => (
     <>
@@ -164,7 +164,7 @@ export const Gameboard: React.FC = () => {
 
   return (
     <div
-      className="w-full min-h-[calc(100dvh-4rem)] text-foreground px-1 sm:px-2 md:px-4 lg:px-6 py-2 sm:py-3 flex flex-col lg:flex-row gap-2 sm:gap-3 md:gap-4 relative bg-cover bg-center"
+      className="w-full min-h-[calc(100dvh-4rem)] text-foreground px-1 sm:px-2 md:px-4 lg:px-6 py-1 sm:py-2 flex flex-col lg:flex-row gap-1.5 sm:gap-2 md:gap-4 relative bg-cover bg-center"
       style={{
         backgroundImage: `url(${backgroundImage})`,
         backgroundAttachment: "fixed",
@@ -182,11 +182,11 @@ export const Gameboard: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.25 }}
-            className="absolute top-3 left-1/2 -translate-x-1/2 z-30 pointer-events-none"
+            className="absolute top-2 sm:top-3 left-1/2 -translate-x-1/2 z-30 pointer-events-none"
           >
-            <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-card/90 dark:bg-background/90 border border-border/60 shadow-soft">
-              <Sparkles className="h-4 w-4 text-primary" />
-              <span className="text-xs sm:text-sm font-medium whitespace-nowrap">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-card/90 dark:bg-background/90 border border-border/60 shadow-soft">
+              <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+              <span className="text-[0.7rem] sm:text-xs md:text-sm font-medium whitespace-nowrap">
                 {recentMoveLabel}
               </span>
             </div>
@@ -196,9 +196,9 @@ export const Gameboard: React.FC = () => {
 
       <main className="flex-grow flex flex-col relative z-10 min-h-0">
         {/* Opponents Area */}
-        <div className="flex justify-center items-start mb-1.5 sm:mb-3 md:mb-4 flex-shrink-0 w-full px-1 sm:px-2">
+        <div className="flex justify-center items-start mb-1 sm:mb-2 md:mb-3 flex-shrink-0 w-full">
           {otherPlayers.length > 0 ? (
-            <div className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 w-full max-w-5xl mx-auto bg-card/70 dark:bg-card/20 border border-border/50 rounded-xl shadow-soft backdrop-blur-sm px-2 sm:px-3 py-2">
+            <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 md:gap-3 w-full max-w-5xl mx-auto bg-card/70 dark:bg-card/20 border border-border/50 rounded-xl shadow-soft backdrop-blur-sm px-1.5 sm:px-2 md:px-3 py-1.5 sm:py-2">
               {otherPlayers.map((player) => (
                 <div key={player.id} className="flex-shrink-0 min-w-0">
                   <PlayerHand
@@ -211,7 +211,7 @@ export const Gameboard: React.FC = () => {
               ))}
             </div>
           ) : (
-            <div className="flex items-center justify-center h-20 sm:h-24 w-full max-w-md rounded-lg bg-purple-50/50 border-2 border-dashed border-purple-200/60 mx-auto">
+            <div className="flex items-center justify-center h-16 sm:h-20 w-full max-w-md rounded-lg bg-purple-50/50 border-2 border-dashed border-purple-200/60 mx-auto">
               <p className="text-muted-foreground font-heading text-xs sm:text-sm md:text-base">
                 {t('game.waitingForOpponents')}
               </p>
@@ -221,7 +221,7 @@ export const Gameboard: React.FC = () => {
 
         {/* Center Area */}
         <div
-          className="flex-grow flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 my-2 sm:my-3 md:my-4 min-h-0 w-full"
+          className="flex-grow flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 md:gap-5 lg:gap-8 my-1 sm:my-2 md:my-3 min-h-0 w-full"
           data-tutorial-id="piles"
         >
           <div
@@ -239,7 +239,7 @@ export const Gameboard: React.FC = () => {
               isGlowing={isPlayerActionable}
               playSound={playSound}
             />
-            <span className="mt-1 sm:mt-1.5 text-xs sm:text-sm md:text-base font-medium text-foreground dark:text-gray-200 text-center">
+            <span className="mt-1 text-[0.7rem] sm:text-xs md:text-sm font-medium text-foreground dark:text-gray-200 text-center">
               {t('game.draw')} ({drawPile.length})
             </span>
           </div>
@@ -247,13 +247,13 @@ export const Gameboard: React.FC = () => {
           <AnimatePresence>
             {drawnCard && isMyTurn && gamePhase === "holding_card" && (
               <motion.div
-                className="flex flex-col items-center px-2"
+                className="flex flex-col items-center px-1 sm:px-2"
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.5 }}
                 transition={{ duration: 0.3 }}
               >
-                <p className="mb-2 text-sm sm:text-base font-semibold font-heading text-foreground dark:text-purple-300">
+                <p className="mb-1 sm:mb-2 text-xs sm:text-sm md:text-base font-semibold font-heading text-foreground dark:text-purple-300">
                   {t('game.yourCard')}
                 </p>
                 <GameCard
@@ -286,7 +286,7 @@ export const Gameboard: React.FC = () => {
               disableSpecialAnimation
               playSound={playSound}
             />
-            <span className="mt-1 sm:mt-1.5 text-xs sm:text-sm md:text-base font-medium text-foreground dark:text-gray-200 text-center">
+            <span className="mt-1 text-[0.7rem] sm:text-xs md:text-sm font-medium text-foreground dark:text-gray-200 text-center">
               {t('game.discard')}
             </span>
           </div>
@@ -294,7 +294,7 @@ export const Gameboard: React.FC = () => {
 
         {/* Bottom Player Area */}
         {bottomPlayer && (
-          <div className="mt-auto flex-shrink-0 pb-1 sm:pb-2">
+          <div className="mt-auto flex-shrink-0 pb-1">
             <div data-tutorial-id="player-hand">
               <PlayerHand
                 player={bottomPlayer}
@@ -303,7 +303,7 @@ export const Gameboard: React.FC = () => {
               />
             </div>
             <div
-              className="flex justify-center mt-1 sm:mt-2 md:mt-3 h-8 sm:h-10 md:h-12"
+              className="flex justify-center mt-1 sm:mt-1.5 md:mt-2 h-7 sm:h-9 md:h-11"
               data-tutorial-id="game-actions"
             >
               <GameActions />

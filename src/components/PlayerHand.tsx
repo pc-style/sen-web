@@ -169,8 +169,9 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
   return (
     <div
       className={cn(
-        "relative p-1 sm:p-1.5 md:p-2 lg:p-3 rounded-xl border-2 transition-all duration-300 bg-card/80 dark:bg-card/30 backdrop-blur-sm",
+        "relative rounded-xl border-2 transition-all duration-300 bg-card/80 dark:bg-card/30 backdrop-blur-sm",
         "shadow-soft",
+        isOpponent ? "p-1 sm:p-1.5 md:p-2" : "p-1.5 sm:p-2 md:p-2.5 lg:p-3",
         isCurrentPlayer &&
           gamePhase !== "round_end" &&
           gamePhase !== "game_over"
@@ -178,11 +179,11 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
           : "border-border/40",
       )}
     >
-      <div className="flex flex-col items-center gap-1 sm:gap-1.5">
+      <div className="flex flex-col items-center gap-0.5 sm:gap-1">
         <h3
           className={cn(
-            "font-heading text-xs sm:text-sm md:text-base font-semibold text-center text-foreground",
-            isOpponent && "text-[0.7rem] sm:text-xs md:text-sm",
+            "font-heading font-semibold text-center text-foreground",
+            isOpponent ? "text-[0.65rem] sm:text-xs md:text-sm" : "text-xs sm:text-sm md:text-base",
           )}
         >
           {player.name}{" "}
@@ -200,15 +201,15 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
-              className="flex items-center gap-1 text-[0.65rem] sm:text-xs text-muted-foreground"
+              className="flex items-center gap-1 text-[0.6rem] sm:text-xs text-muted-foreground"
             >
-              <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+              <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
               <span className="whitespace-nowrap">{actionLabel}</span>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <div className={cn("flex gap-0.5 sm:gap-1 md:gap-2 justify-center w-full relative")}> 
+        <div className={cn("flex justify-center w-full relative", isOpponent ? "gap-0.5 sm:gap-1" : "gap-1 sm:gap-1.5 md:gap-2")}> 
           <AnimatePresence>
             {recentMoveForPlayer?.action === "draw" && (
               <motion.div
@@ -260,7 +261,7 @@ export const PlayerHand: React.FC<PlayerHandProps> = ({
                     onClick={() => handleCardClick(index)}
                     className={cn(
                       isOpponent &&
-                      "!w-[20vw] !max-w-28 sm:!w-[12vw] sm:!max-w-28 md:!w-[9vw] md:!max-w-32 lg:!w-[7vw] lg:!max-w-28",
+                      "!w-[16vw] !max-w-20 sm:!w-[11vw] sm:!max-w-24 md:!w-[8vw] md:!max-w-28 lg:!w-[7vw] lg:!max-w-28",
                       getCardInteractionClass(index),
                     )}
                     playSound={playSound}
